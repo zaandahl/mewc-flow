@@ -21,4 +21,6 @@ RUN pip install -r requirements.txt
 # install custom library
 COPY src/ .
 RUN python setup.py bdist_wheel
-RUN pip install dist/wheelfile.whl
+
+#RUN echo $(ls -1 /code/)
+RUN pip install dist/mewc_common-0.1.0-py3-none-any.whl
