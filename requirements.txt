@@ -1,5 +1,7 @@
 humanfriendly
+imgaug
 jsonpickle
+keras_efficientnet_v2
 matplotlib
 numpy
 pandas
@@ -8,6 +10,7 @@ pillow
 pyyaml
 requests
 setuptools
+sklearn
 statistics
 tensorflow_addons
 tqdm
