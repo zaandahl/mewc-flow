@@ -18,9 +18,6 @@ COPY requirements.txt .
 # install dependencies
 RUN pip install -r requirements.txt
 
-# install custom library
+# copy code
 COPY src/ .
-RUN python setup.py bdist_wheel
 
-#RUN echo $(ls -1 /code/)
-RUN pip install dist/mewc_common-0.1.0-py3-none-any.whl
