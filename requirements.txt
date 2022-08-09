@@ -7,9 +7,11 @@ piexif
 pillow
 pyyaml
 requests
+setuptools
 statistics
 tensorflow_addons
 tqdm
-
+twine
+wheel
 
 

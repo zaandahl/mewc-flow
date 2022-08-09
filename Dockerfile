@@ -17,3 +17,8 @@ COPY requirements.txt .
 
 # install dependencies
 RUN pip install -r requirements.txt
+
+# install custom library
+COPY src/ .
+RUN python setup.py bdist_wheel
+RUN pip install dist/wheelfile.whl
