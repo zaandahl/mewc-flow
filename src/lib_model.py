@@ -5,7 +5,7 @@ from tensorflow import keras
 from tensorflow.keras.models import Sequential
 from tensorflow.keras import layers
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dropout, Flatten, Dense, BatchNormalization, GlobalAveragePooling2D, SpatialDropout2D
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.callbacks import EarlyStopping, LearningRateScheduler
 import keras_efficientnet_v2
 from lib_data import create_dataset
 
