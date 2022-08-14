@@ -80,14 +80,14 @@ def unfreeze_model(model, lr, num_classes):
     model.compile(optimizer=optimizer, loss=loss_f, metrics=["accuracy"])
     return(model)
 
-def exp_scheduler(epoch, lr): 
-    lr_base=0.256; decay_step=2.4; decay_rate=0.97; lr_min=0.00001; warmup=10
-    if epoch < warmup:
-        lr = (lr_base - lr_min) * (epoch + 1) / (warmup + 1)
-    else:
-        lr = lr_base * decay_rate ** ((epoch - warmup) / decay_step)
-        lr = lr if lr > lr_min else lr_min
-    return lr
+# def exp_scheduler(epoch, lr): 
+#     lr_base=0.256; decay_step=2.4; decay_rate=0.97; lr_min=0.00001; warmup=10
+#     if epoch < warmup:
+#         lr = (lr_base - lr_min) * (epoch + 1) / (warmup + 1)
+#     else:
+#         lr = lr_base * decay_rate ** ((epoch - warmup) / decay_step)
+#         lr = lr if lr > lr_min else lr_min
+#     return lr
 
 def fit_frozen(
     model,
