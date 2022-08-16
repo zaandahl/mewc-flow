@@ -9,12 +9,9 @@ piexif
 pillow
 pyyaml
 requests
-setuptools
 sklearn
 statistics
 tensorflow_addons
 tqdm
-twine
-wheel
 
 
