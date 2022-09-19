@@ -77,13 +77,22 @@ def split_dataframe(ds_path, seed=42, val_split=0.2, test_split=0, n=1000):
 
 # This function takes a pandas df from create_dataframe and converts to a TensorFlow dataset
 def create_dataset(in_df, img_size, batch_size, magnitude, ds_name="train"):
-    # helper function to use with the lambda mapping
+    
+    # helper functions to use with the lambda mapping
     def load(file_path):
         img = tf.io.read_file(file_path)
         img = tf.image.decode_png(img, channels=3)
         img = tf.image.convert_image_dtype(img, tf.uint8)
         img = tf.image.resize(img, size=(img_size, img_size))
         return img
+
+    def augment(images):
+        # Input to `augment()` is a TensorFlow tensor which
+        # is not supported by `imgaug`. This is why we first
+        # convert it to its `numpy` variant.
+        images = tf.cast(images, tf.uint8)
+        return rand_aug(images=images.numpy())
+
     in_path = in_df['File']
     in_class = LabelEncoder().fit_transform(in_df['Label'].values)
 
@@ -94,12 +103,6 @@ def create_dataset(in_df, img_size, batch_size, magnitude, ds_name="train"):
 
     rand_aug = iaa.RandAugment(n=3, m=magnitude)
 
-    def augment(images):
-        # Input to `augment()` is a TensorFlow tensor which
-        # is not supported by `imgaug`. This is why we first
-        # convert it to its `numpy` variant.
-        images = tf.cast(images, tf.uint8)
-        return rand_aug(images=images.numpy())
     # convert to dataset
     if ds_name == "train":
         ds = (tf.data.Dataset.from_tensor_slices((in_path, in_class))
