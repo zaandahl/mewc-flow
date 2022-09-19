@@ -9,9 +9,12 @@ from sklearn.model_selection import train_test_split
 from imgaug import augmenters as iaa
 import imgaug as ia
 
+# this seed should be set in the augment function and config defined, not globally
 ia.seed(42)
 
+
 # This function creates a pandas dataframe with the image path and class label derived from the directory structure
+# Rename to indicate that it is returning pandas dataframe 
 def create_dataframe(ds_path, n=[1000], seed=42):
     # Selecting folder paths in dataset
     dir_ = Path(ds_path)
@@ -27,6 +30,7 @@ def create_dataframe(ds_path, n=[1000], seed=42):
     ds_df = pd.concat([ds_filepaths, ds_labels], axis=1)
     num_classes = len(ds_labels.unique())
 
+    # Move the Sampling to it's own function
     #Sampling 
     ds_samp = pd.DataFrame()
     if(n != None): 
@@ -55,6 +59,7 @@ def create_dataframe(ds_path, n=[1000], seed=42):
     # print(n)
     return ds_samp
 
+# Returns data frame
 def split_dataframe(ds_path, seed=42, val_split=0.2, test_split=0, n=1000):
     insample_df = create_dataframe(ds_path, n=n, seed=seed)
     num_classes = insample_df['Label'].nunique()
@@ -76,6 +81,7 @@ def split_dataframe(ds_path, seed=42, val_split=0.2, test_split=0, n=1000):
     return(train_df, val_df, test_df, num_classes)
 
 # This function takes a pandas df from create_dataframe and converts to a TensorFlow dataset
+# refactor to make the image augmentation a flag rather than name based?
 def create_dataset(in_df, img_size, batch_size, magnitude, ds_name="train"):
     
     # helper functions to use with the lambda mapping
