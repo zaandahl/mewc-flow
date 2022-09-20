@@ -15,7 +15,7 @@ ia.seed(42)
 
 # This function creates a pandas dataframe with the image path and class label derived from the directory structure
 # Rename to indicate that it is returning pandas dataframe 
-def create_dataframe(ds_path, n=[1000], seed=42):
+def create_dataframe(ds_path):
     # Selecting folder paths in dataset
     dir_ = Path(ds_path)
     ds_filepaths = list(dir_.glob(r'**/*.jpg'))
@@ -29,7 +29,9 @@ def create_dataframe(ds_path, n=[1000], seed=42):
     # Concatenating...
     ds_df = pd.concat([ds_filepaths, ds_labels], axis=1)
     num_classes = len(ds_labels.unique())
+    return ds_df, num_classes
 
+def sample_dataframe(ds_df, n=[1000], seed=42):
     # Move the Sampling to it's own function
     #Sampling 
     ds_samp = pd.DataFrame()
@@ -54,12 +56,14 @@ def create_dataframe(ds_path, n=[1000], seed=42):
     # Randomising
     ds_samp = ds_samp.sample(frac=1, random_state=seed).reset_index(drop=True)
 
+    # move this print statement out for testing
     print(ds_samp.groupby('Label').size())
     # n = ds_samp.shape[0]
     # print(n)
     return ds_samp
 
 # Returns data frame
+# refactor this to accept a dataframe rather than a create one from a path
 def split_dataframe(ds_path, seed=42, val_split=0.2, test_split=0, n=1000):
     insample_df = create_dataframe(ds_path, n=n, seed=seed)
     num_classes = insample_df['Label'].nunique()
