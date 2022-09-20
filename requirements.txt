@@ -7,12 +7,9 @@ numpy
 pandas
 piexif
 pillow
-pytest
 pyyaml
 requests
 sklearn
 statistics
 tensorflow_addons
 tqdm
-
-

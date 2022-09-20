@@ -2,6 +2,6 @@ services:
   app:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile.test
     volumes:
-      - ./test:/test
+      - ./test:/code/test
