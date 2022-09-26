@@ -9,12 +9,8 @@ from sklearn.model_selection import train_test_split
 from imgaug import augmenters as iaa
 import imgaug as ia
 
-# this seed should be set in the augment function and config defined, not globally
-ia.seed(42)
-
 
 # This function creates a pandas dataframe with the image path and class label derived from the directory structure
-# Rename to indicate that it is returning pandas dataframe 
 def create_dataframe(ds_path):
     # Selecting folder paths in dataset
     dir_ = Path(ds_path)
@@ -78,9 +74,10 @@ def split_dataframe(ds_df, seed=42, val_split=0.2, test_split=0):
     return(train_df, val_df, test_df, num_classes)
 
 # This function takes a pandas df from create_dataframe and converts to a TensorFlow dataset
-# refactor to make the image augmentation a flag rather than name based?
-def create_dataset(in_df, img_size, batch_size, magnitude, ds_name="train"):
-    
+
+def create_dataset(in_df, img_size, batch_size, magnitude, seed=42, augment=False): 
+    # set seed
+    ia.seed(seed)   
     # helper functions to use with the lambda mapping
     def load(file_path):
         img = tf.io.read_file(file_path)
@@ -88,26 +85,22 @@ def create_dataset(in_df, img_size, batch_size, magnitude, ds_name="train"):
         img = tf.image.convert_image_dtype(img, tf.uint8)
         img = tf.image.resize(img, size=(img_size, img_size))
         return img
-
     def augment(images):
         # Input to `augment()` is a TensorFlow tensor which
         # is not supported by `imgaug`. This is why we first
         # convert it to its `numpy` variant.
         images = tf.cast(images, tf.uint8)
         return rand_aug(images=images.numpy())
-
+    # prepare data
     in_path = in_df['File']
     in_class = LabelEncoder().fit_transform(in_df['Label'].values)
-
     in_class = in_class.reshape(len(in_class), 1)
     in_class = OneHotEncoder(sparse=False).fit_transform(in_class)
     print(in_path.shape)
     print(in_class.shape)
-
     rand_aug = iaa.RandAugment(n=3, m=magnitude)
-
     # convert to dataset
-    if ds_name == "train":
+    if augment == True:
         ds = (tf.data.Dataset.from_tensor_slices((in_path, in_class))
             .map(lambda img_path, img_class: (load(img_path), img_class))
             .batch(batch_size)

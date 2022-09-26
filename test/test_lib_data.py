@@ -1,4 +1,4 @@
-from lib_data import create_dataframe, sample_dataframe, split_dataframe
+from lib_data import create_dataframe,sample_dataframe,split_dataframe,create_dataset
 
 # mnist_mini dataset contains numbers 0-9 with 100 images in each class
 class TestCreateDataframe:
@@ -31,3 +31,11 @@ class TestSplitDataframe:
         assert train_df.shape == (800,2)
         assert val_df.shape == (200,2)
         assert test_df == None
+
+class TestCreateDataset:
+    def test_create_dataset(self):
+        ds_df,num_classes,class_labels = create_dataframe("./test/mnist_mini/")
+        tensor_ds = create_dataset(ds_df, img_size=28, batch_size=10, magnitude=0, seed=42, augment=False)
+        assert tensor_ds.cardinality().numpy() == 100
+        tensor_ds = create_dataset(ds_df, img_size=28, batch_size=10, magnitude=0, seed=42, augment=True)
+        assert tensor_ds.cardinality().numpy() == 100
