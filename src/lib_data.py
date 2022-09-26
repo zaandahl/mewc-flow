@@ -31,36 +31,30 @@ def create_dataframe(ds_path):
     num_classes = len(ds_labels.unique())
     return ds_df, num_classes
 
-def sample_dataframe(ds_df, n=[1000], seed=42):
-    # Move the Sampling to it's own function
-    #Sampling 
-    ds_samp = pd.DataFrame()
+def sample_dataframe(ds_df, n=[1000], seed=42, replace=False, verbose=False): 
+    samp_df = pd.DataFrame()
     if(n != None): 
-        # if n is a single number, just sample that for each class
         for x in range(num_classes):
             group_df = ds_df.groupby('Label').get_group(class_labels[x])
             group_pop = len(group_df.index)
-            if(x < len(n)):
+            if(x < len(n)): # if a sample size definition exists for the class, use it
                 samp = n[x]
-            else:
+            else:  # use last sample size definition for remaining classes
                 samp = n[len(n)-1]
-            if(samp > group_pop):
-                rep_flag = True
-            else:
-                rep_flag = False
-            print(class_labels[x])
-            print(group_pop)
-            print(samp)
-            print("--")
-            ds_samp = pd.concat([ds_samp, group_df.sample(n=samp, replace=rep_flag)])
-    # Randomising
-    ds_samp = ds_samp.sample(frac=1, random_state=seed).reset_index(drop=True)
-
-    # move this print statement out for testing
-    print(ds_samp.groupby('Label').size())
-    # n = ds_samp.shape[0]
+            if(samp > group_pop): # we cant sample without replacement if the sample size exceeds the population
+                replace = True
+            if(verbose):
+                print(class_labels[x])
+                print(group_pop)
+                print(samp)
+                print("--")
+            samp_df = pd.concat([samp_df, group_df.sample(n=samp, replace=replace)])
+    samp_df = samp_df.sample(frac=1, random_state=seed).reset_index(drop=True)  # Randomising
+    if(verbose):
+        print(samp_df.groupby('Label').size())
+    # n = samp_df.shape[0]
     # print(n)
-    return ds_samp
+    return samp_df
 
 # Returns data frame
 # refactor this to accept a dataframe rather than a create one from a path
