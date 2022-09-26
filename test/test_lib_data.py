@@ -20,3 +20,5 @@ class TestSampleDataframe:
         assert samp_df.shape == (200,2)
         samp_df = sample_dataframe(ds_df,num_classes,class_labels,n=[50,40,20,10,10,5,5,3,3,3])
         assert samp_df.shape == (149,2)
+        samp_df = sample_dataframe(ds_df,num_classes,class_labels,n=[200],rep=False)
+        assert samp_df.shape == (2000,2)

@@ -37,18 +37,19 @@ def sample_dataframe(ds_df, num_classes, class_labels, n=[1000], seed=42, rep=Fa
         for x in range(num_classes):
             group_df = ds_df.groupby('Label').get_group(class_labels[x])
             group_pop = len(group_df.index)
+            temp_rep = rep
             if(x < len(n)): # if a sample size definition exists for the class, use it
                 samp = n[x]
             else:  # use last sample size definition for remaining classes
                 samp = n[len(n)-1]
             if(samp > group_pop): # we cant sample without replacement if the sample size exceeds the population
-                rep = True
+                temp_rep = True
             if(verbose):
                 print(class_labels[x])
                 print(group_pop)
                 print(samp)
                 print("--")
-            samp_df = pd.concat([samp_df, group_df.sample(n=samp, replace=rep)])
+            samp_df = pd.concat([samp_df, group_df.sample(n=samp, replace=temp_rep)])
     samp_df = samp_df.sample(frac=1, random_state=seed).reset_index(drop=True)  # Randomising
     if(verbose):
         print(samp_df.groupby('Label').size())
