@@ -58,13 +58,11 @@ def sample_dataframe(ds_df, num_classes, class_labels, n=[1000], seed=42, rep=Fa
     return samp_df
 
 # Returns data frame
-# refactor this to accept a dataframe rather than a create one from a path
-def split_dataframe(ds_path, seed=42, val_split=0.2, test_split=0, n=1000):
-    insample_df = create_dataframe(ds_path, n=n, seed=seed)
-    num_classes = insample_df['Label'].nunique()
+def split_dataframe(ds_df, seed=42, val_split=0.2, test_split=0):
+    num_classes = ds_df['Label'].nunique()
     print(num_classes)
     valtest_size = val_split + test_split
-    train_df, valtest_df = train_test_split(insample_df, test_size=valtest_size, stratify=insample_df['Label'])
+    train_df, valtest_df = train_test_split(ds_df, test_size=valtest_size, stratify=ds_df['Label'])
     # # Randomise and reset indexes
     train_df = train_df.sample(frac=1, random_state=seed).reset_index(drop=True)
     valtest_df = valtest_df.sample(frac=1, random_state=seed).reset_index(drop=True)
