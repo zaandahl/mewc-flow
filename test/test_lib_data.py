@@ -18,3 +18,5 @@ class TestSampleDataframe:
         ds_df,num_classes,class_labels = create_dataframe("./test/mnist_mini/")
         samp_df = sample_dataframe(ds_df,num_classes,class_labels,n=[20])
         assert samp_df.shape == (200,2)
+        samp_df = sample_dataframe(ds_df,num_classes,class_labels,n=[50,40,20,10,10,5,5,3,3,3])
+        assert samp_df.shape == (149,2)
