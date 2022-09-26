@@ -29,9 +29,9 @@ def create_dataframe(ds_path):
     # Concatenating...
     ds_df = pd.concat([ds_filepaths, ds_labels], axis=1)
     num_classes = len(ds_labels.unique())
-    return ds_df, num_classes
+    return ds_df, num_classes, class_labels
 
-def sample_dataframe(ds_df, n=[1000], seed=42, replace=False, verbose=False): 
+def sample_dataframe(ds_df, num_classes, class_labels, n=[1000], seed=42, rep=False, verbose=False): 
     samp_df = pd.DataFrame()
     if(n != None): 
         for x in range(num_classes):
@@ -42,13 +42,13 @@ def sample_dataframe(ds_df, n=[1000], seed=42, replace=False, verbose=False):
             else:  # use last sample size definition for remaining classes
                 samp = n[len(n)-1]
             if(samp > group_pop): # we cant sample without replacement if the sample size exceeds the population
-                replace = True
+                rep = True
             if(verbose):
                 print(class_labels[x])
                 print(group_pop)
                 print(samp)
                 print("--")
-            samp_df = pd.concat([samp_df, group_df.sample(n=samp, replace=replace)])
+            samp_df = pd.concat([samp_df, group_df.sample(n=samp, replace=rep)])
     samp_df = samp_df.sample(frac=1, random_state=seed).reset_index(drop=True)  # Randomising
     if(verbose):
         print(samp_df.groupby('Label').size())
