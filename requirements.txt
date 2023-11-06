@@ -9,7 +9,7 @@ piexif
 pillow
 pyyaml
 requests
-sklearn
+scikit-learn
 statistics
 tensorflow_addons
 tqdm
