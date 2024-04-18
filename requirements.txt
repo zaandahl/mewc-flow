@@ -1,6 +1,7 @@
 humanfriendly
 imgaug
 jsonpickle
+keras-cv
 keras_efficientnet_v2
 matplotlib
 numpy
