@@ -49,19 +49,11 @@ class TestLibCommon(unittest.TestCase):
 
     @patch('lib_common.devices', return_value=['cpu'])
     @patch('lib_common.distribution')
-    def test_setup_strategy_cpu(self, mock_distribution, mock_devices):
-        # Mock NullStrategy
-        class MockNullStrategy:
-            def scope(self):
-                @contextmanager
-                def null_scope():
-                    yield
-                return null_scope()
-        
-        with patch('lib_common.setup_strategy.__globals__["NullStrategy"]', MockNullStrategy):
-            strategy = setup_strategy()
-            self.assertIsInstance(strategy, MockNullStrategy)
-            self.assertFalse(mock_distribution.DataParallel.called)
+    @patch('lib_common.setup_strategy.NullStrategy', new_callable=MagicMock)
+    def test_setup_strategy_cpu(self, MockNullStrategy, mock_distribution, mock_devices):
+        strategy = setup_strategy()
+        self.assertIsInstance(strategy, MockNullStrategy)
+        self.assertFalse(mock_distribution.DataParallel.called)
 
     @patch('lib_common.devices', return_value=['cuda:0', 'cuda:1'])
     @patch('lib_common.distribution')
