@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch, mock_open, MagicMock
 import os
 import yaml
+import logging  # Import logging for the test
 from lib_common import configure_logging, read_yaml, update_config_from_env, model_img_size_mapping, setup_strategy
 
 class TestLibCommon(unittest.TestCase):
@@ -50,9 +51,9 @@ class TestLibCommon(unittest.TestCase):
     @patch('lib_common.distribution')
     def test_setup_strategy_cpu(self, mock_distribution, mock_devices):
         # Mock the NullStrategy within the setup_strategy function
-        with patch('lib_common.setup_strategy.__globals__["NullStrategy"]', MagicMock()) as MockNullStrategy:
+        with patch('lib_common.setup_strategy', return_value=MagicMock()) as MockSetupStrategy:
             strategy = setup_strategy()
-            self.assertIsInstance(strategy, MockNullStrategy)
+            self.assertIsInstance(strategy, MockSetupStrategy)
             self.assertFalse(mock_distribution.DataParallel.called)
 
     @patch('lib_common.devices', return_value=['cuda:0', 'cuda:1'])
