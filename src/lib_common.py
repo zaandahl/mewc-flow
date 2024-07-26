@@ -49,18 +49,16 @@ def model_img_size_mapping(model_name):
             return size
     return 384 # Default value of 384px if no match is found
 
+# Define NullStrategy within the module level so it can be easily accessed
+class NullStrategy:
+    def scope(self):
+        @contextmanager
+        def null_scope():
+            yield
+        return null_scope()
+
 # Sets up the strategy for TensorFlow/JAX training with GPU (single or multiple) or CPU
 def setup_strategy():
-    
-    # Create a context manager that does nothing (for CPU-only training), in the case where no GPU exists
-    class NullStrategy:
-        def scope(self):
-            from contextlib import contextmanager
-            @contextmanager
-            def null_scope():
-                yield
-            return null_scope()
-    
     gpus = devices()
     if any('cuda' in str(device).lower() for device in gpus):
         strategy = distribution.DataParallel(devices=gpus)

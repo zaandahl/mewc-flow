@@ -3,7 +3,7 @@ from unittest.mock import patch, mock_open, MagicMock
 import os
 import yaml
 import logging  # Import logging for the test
-from lib_common import configure_logging, read_yaml, update_config_from_env, model_img_size_mapping, setup_strategy
+from lib_common import configure_logging, read_yaml, update_config_from_env, model_img_size_mapping, setup_strategy, NullStrategy
 
 class TestLibCommon(unittest.TestCase):
 
@@ -52,7 +52,7 @@ class TestLibCommon(unittest.TestCase):
     def test_setup_strategy_cpu(self, mock_distribution, mock_devices):
         # Test setup_strategy when only CPU is available
         strategy = setup_strategy()
-        self.assertIsInstance(strategy, setup_strategy.__globals__['NullStrategy'])
+        self.assertIsInstance(strategy, NullStrategy)
         self.assertFalse(mock_distribution.DataParallel.called)
 
     @patch('lib_common.devices', return_value=['cuda:0', 'cuda:1'])
