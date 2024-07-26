@@ -1,5 +1,6 @@
 # set base image (host OS)
-FROM tensorflow/tensorflow:2.9.1-gpu
+# Digest from TensorFlow nightly-gpu on 2024-07-25 
+FROM tensorflow/tensorflow@sha256:c73a8dafeb42
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     ffmpeg \
