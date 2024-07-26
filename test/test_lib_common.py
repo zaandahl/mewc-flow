@@ -49,7 +49,7 @@ class TestLibCommon(unittest.TestCase):
 
     @patch('lib_common.devices', return_value=['cpu'])
     @patch('lib_common.distribution')
-    @patch('lib_common.setup_strategy.NullStrategy', new_callable=MagicMock)
+    @patch('lib_common.NullStrategy', new_callable=MagicMock)
     def test_setup_strategy_cpu(self, MockNullStrategy, mock_distribution, mock_devices):
         strategy = setup_strategy()
         self.assertIsInstance(strategy, MockNullStrategy)
