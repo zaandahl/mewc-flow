@@ -51,9 +51,9 @@ class TestLibCommon(unittest.TestCase):
     @patch('lib_common.distribution')
     def test_setup_strategy_cpu(self, mock_distribution, mock_devices):
         # Mock the NullStrategy within the setup_strategy function
-        with patch('lib_common.setup_strategy', return_value=MagicMock()) as MockSetupStrategy:
+        with patch('lib_common.setup_strategy.__globals__["NullStrategy"]', new_callable=MagicMock) as MockNullStrategy:
             strategy = setup_strategy()
-            self.assertIsInstance(strategy, MockSetupStrategy)
+            self.assertIsInstance(strategy, MockNullStrategy)
             self.assertFalse(mock_distribution.DataParallel.called)
 
     @patch('lib_common.devices', return_value=['cuda:0', 'cuda:1'])
