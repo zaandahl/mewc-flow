@@ -49,15 +49,16 @@ class TestLibCommon(unittest.TestCase):
 
     @patch('lib_common.devices', return_value=['cpu'])
     @patch('lib_common.distribution')
-    @patch('lib_common.NullStrategy', new_callable=MagicMock)
-    def test_setup_strategy_cpu(self, MockNullStrategy, mock_distribution, mock_devices):
+    def test_setup_strategy_cpu(self, mock_distribution, mock_devices):
+        # Test setup_strategy when only CPU is available
         strategy = setup_strategy()
-        self.assertIsInstance(strategy, MockNullStrategy)
+        self.assertIsInstance(strategy, setup_strategy.__globals__['NullStrategy'])
         self.assertFalse(mock_distribution.DataParallel.called)
 
     @patch('lib_common.devices', return_value=['cuda:0', 'cuda:1'])
     @patch('lib_common.distribution')
     def test_setup_strategy_gpu(self, mock_distribution, mock_devices):
+        # Test setup_strategy when GPU is available
         strategy = setup_strategy()
         mock_distribution.DataParallel.assert_called_with(devices=['cuda:0', 'cuda:1'])
         self.assertTrue(mock_distribution.DataParallel.called)
