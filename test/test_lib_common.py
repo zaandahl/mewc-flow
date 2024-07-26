@@ -1,18 +1,22 @@
 import unittest
-from unittest.mock import patch, mock_open
+from unittest.mock import patch, mock_open, MagicMock
 import os
 import yaml
 from lib_common import configure_logging, read_yaml, update_config_from_env, model_img_size_mapping, setup_strategy
 
 class TestLibCommon(unittest.TestCase):
 
-    @patch('lib_common.logging')
+    @patch('lib_common.logging.getLogger')
     @patch('lib_common.warnings')
     @patch.dict(os.environ, {}, clear=True)
-    def test_configure_logging(self, mock_logging, mock_warnings):
+    def test_configure_logging(self, mock_warnings, mock_getLogger):
+        mock_logger = MagicMock()
+        mock_getLogger.return_value = mock_logger
+        
         configure_logging()
-        mock_logging.getLogger.assert_called_with('tensorflow')
-        mock_logging.getLogger().setLevel.assert_called_with(mock_logging.ERROR)
+        
+        mock_getLogger.assert_called_with('tensorflow')
+        mock_logger.setLevel.assert_called_with(logging.ERROR)
         mock_warnings.simplefilter.assert_any_call(action='ignore', category=FutureWarning)
         mock_warnings.simplefilter.assert_any_call(action='ignore', category=Warning)
         mock_warnings.filterwarnings.assert_called_with("ignore")
@@ -45,9 +49,11 @@ class TestLibCommon(unittest.TestCase):
     @patch('lib_common.devices', return_value=['cpu'])
     @patch('lib_common.distribution')
     def test_setup_strategy_cpu(self, mock_distribution, mock_devices):
-        strategy = setup_strategy()
-        self.assertIsInstance(strategy, setup_strategy.__globals__['NullStrategy'])
-        self.assertFalse(mock_distribution.DataParallel.called)
+        # Mock the NullStrategy within the setup_strategy function
+        with patch('lib_common.setup_strategy.__globals__["NullStrategy"]', MagicMock()) as MockNullStrategy:
+            strategy = setup_strategy()
+            self.assertIsInstance(strategy, MockNullStrategy)
+            self.assertFalse(mock_distribution.DataParallel.called)
 
     @patch('lib_common.devices', return_value=['cuda:0', 'cuda:1'])
     @patch('lib_common.distribution')
