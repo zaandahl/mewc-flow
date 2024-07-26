@@ -21,7 +21,7 @@ RUN pip install pytest
 # copy code
 COPY src/ /code
 
-ENV PYTHONPATH "${PYTHONPATH}:/code"
+ENV PYTHONPATH="${PYTHONPATH}:/code"
 
 # run tests
 # Run the tests using unittest
