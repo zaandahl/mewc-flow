@@ -12,14 +12,14 @@ RUN apt-get update && \
     vim \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the entrypoint script (NUMA error fix)
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+# Copy the script to modify NUMA nodes
+COPY modify_numa.sh /usr/local/bin/modify_numa.sh
 
-# Make the entrypoint script executable
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# Make the script executable
+RUN chmod +x /usr/local/bin/modify_numa.sh
 
-# Set the entrypoint
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+# Run the script during the build process
+RUN /usr/local/bin/modify_numa.sh
 
 # set the working directory in the container
 WORKDIR /code
