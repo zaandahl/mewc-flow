@@ -10,8 +10,14 @@ RUN apt-get update && \
     numactl \
     && rm -rf /var/lib/apt/lists/*
 
-# Modify NUMA node files
-RUN for a in /sys/bus/pci/devices/*; do echo 0 > $a/numa_node || true; done
+# Copy the entrypoint script (NUMA error fix)
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+
+# Make the entrypoint script executable
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Set the entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 # set the working directory in the container
 WORKDIR /code
@@ -33,9 +39,6 @@ ENV XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/local/cuda
 RUN pip install pytest
 # copy code
 COPY src/ /code
-
-# Modify NUMA node files
-RUN for a in /sys/bus/pci/devices/*; do echo 0 > $a/numa_node || true; done
 
 ENV PYTHONPATH="${PYTHONPATH}:/code"
 ENV TF_CPP_MIN_LOG_LEVEL=2
