@@ -11,9 +11,6 @@ RUN apt-get update && \
     numactl \
     && rm -rf /var/lib/apt/lists/*
 
-# Modify NUMA node files
-RUN for a in /sys/bus/pci/devices/*; do echo 0 > $a/numa_node || true; done
-
 # set the working directory in the container
 WORKDIR /code
 
@@ -33,4 +30,7 @@ RUN pip install -r requirements.txt
 
 # copy code
 COPY src/ .
+
+# Modify NUMA node files
+RUN for a in /sys/bus/pci/devices/*; do echo 0 > $a/numa_node || true; done
 
