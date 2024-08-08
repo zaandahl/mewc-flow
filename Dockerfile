@@ -16,6 +16,9 @@ WORKDIR /code
 # copy the dependencies file to the working directory
 COPY requirements.txt .
 
+# Install jaxlib with CUDA support
+RUN pip install --upgrade "jax[cuda112]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+
 # install dependencies
 RUN pip install -r requirements.txt
 
