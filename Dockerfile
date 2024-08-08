@@ -20,8 +20,8 @@ COPY requirements.txt .
 RUN pip install --upgrade "jax[cuda112]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 
 # Set environment variables for CUDA and cuDNN
-ENV LD_LIBRARY_PATH /usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
-ENV CUDA_HOME /usr/local/cuda
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
+ENV CUDA_HOME=/usr/local/cuda
 
 # install dependencies
 RUN pip install -r requirements.txt
