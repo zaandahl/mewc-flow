@@ -9,6 +9,7 @@ RUN apt-get update && \
     git \
     wget \
     numactl \
+    vim \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the entrypoint script (NUMA error fix)
