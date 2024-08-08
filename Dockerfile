@@ -8,7 +8,11 @@ RUN apt-get update && \
     libxext6 \
     git \
     wget \
+    numactl \
     && rm -rf /var/lib/apt/lists/*
+
+# Modify NUMA node files
+RUN for a in /sys/bus/pci/devices/*; do echo 0 > $a/numa_node || true; done
 
 # set the working directory in the container
 WORKDIR /code
