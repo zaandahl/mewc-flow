@@ -1,6 +1,7 @@
 # set base image (host OS)
 # Digest from TensorFlow nightly-gpu on 2024-07-25 
-FROM tensorflow/tensorflow@sha256:c73a8dafeb4254896fd9fc8db7f5e748a6bbb4242937a7a14c9e09feb49cdcdc
+#FROM tensorflow/tensorflow@sha256:c73a8dafeb4254896fd9fc8db7f5e748a6bbb4242937a7a14c9e09feb49cdcdc
+FROM tensorflow/tensorflow:2.16.1-gpu
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     ffmpeg \
