@@ -14,17 +14,17 @@ RUN apt-get update && \
     vim \
     && rm -rf /var/lib/apt/lists/*
 
-# Install CUDA 12.5
-RUN wget https://developer.download.nvidia.com/compute/cuda/12.5.0/local_installers/cuda_12.5.0_530.30.02_linux.run && \
-    sh cuda_12.5.0_530.30.02_linux.run --silent --toolkit && \
-    rm cuda_12.5.0_530.30.02_linux.run
+# Install CUDA 12.5 via the Ubuntu repository
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends cuda
 
-# Install cuDNN 8.9
-RUN wget https://developer.download.nvidia.com/compute/redist/cudnn/v8.9.0/cudnn-8.9.0.131_cuda12.5-archive.tar.xz && \
-    tar -xvf cudnn-8.9.0.131_cuda12.5-archive.tar.xz && \
-    cp cudnn-8.9.0.131_cuda12.5-archive/include/* /usr/local/cuda/include/ && \
-    cp cudnn-8.9.0.131_cuda12.5-archive/lib64/* /usr/local/cuda/lib64/ && \
-    rm -rf cudnn-8.9.0.131_cuda12.5-archive.tar.xz cudnn-8.9.0.131_cuda12.5-archive
+# Download and install cuDNN 8.9 for CUDA 12.5
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/libcudnn8_8.9.7.29-1+cuda12.2_amd64.deb && \
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/libcudnn8-dev_8.9.7.29-1+cuda12.2_amd64.deb && \
+    dpkg -i libcudnn8_8.9.7.29-1+cuda12.2_amd64.deb && \
+    dpkg -i libcudnn8-dev_8.9.7.29-1+cuda12.2_amd64.deb && \
+    rm libcudnn8_8.9.7.29-1+cuda12.2_amd64.deb && \
+    rm libcudnn8-dev_8.9.7.29-1+cuda12.2_amd64.deb
 
 # Copy the script to modify NUMA nodes
 COPY modify_numa.sh /usr/local/bin/modify_numa.sh
