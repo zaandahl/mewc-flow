@@ -35,5 +35,8 @@ ENV XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/local/cuda
 # install dependencies
 RUN pip install -r requirements.txt
 
+# Install JAX and JAXLIB with CUDA 12 support
+RUN pip install --upgrade jax==0.4.28 jaxlib==0.4.28+cuda12_pip -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+
 # copy code
 COPY src/ .
