@@ -1,7 +1,5 @@
 # set base image (host OS)
-# Digest from TensorFlow nightly-gpu on 2024-07-25 
-#FROM tensorflow/tensorflow@sha256:c73a8dafeb4254896fd9fc8db7f5e748a6bbb4242937a7a14c9e09feb49cdcdc
-FROM tensorflow/tensorflow:2.16.1-gpu
+FROM tensorflow/tensorflow:2.17.0-gpu
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     ffmpeg \
@@ -13,18 +11,6 @@ RUN apt-get update && \
     nvidia-modprobe \
     vim \
     && rm -rf /var/lib/apt/lists/*
-
-# Install CUDA 12.5 via the Ubuntu repository
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends cuda
-
-# Download and install cuDNN 8.9 for CUDA 12.5
-RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/libcudnn8_8.9.7.29-1+cuda12.2_amd64.deb && \
-    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/libcudnn8-dev_8.9.7.29-1+cuda12.2_amd64.deb && \
-    dpkg -i libcudnn8_8.9.7.29-1+cuda12.2_amd64.deb && \
-    dpkg -i libcudnn8-dev_8.9.7.29-1+cuda12.2_amd64.deb && \
-    rm libcudnn8_8.9.7.29-1+cuda12.2_amd64.deb && \
-    rm libcudnn8-dev_8.9.7.29-1+cuda12.2_amd64.deb
 
 # Copy the script to modify NUMA nodes
 COPY modify_numa.sh /usr/local/bin/modify_numa.sh

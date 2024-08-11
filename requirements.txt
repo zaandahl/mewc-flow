@@ -7,6 +7,7 @@ kimm==0.2.1
 matplotlib==3.9.0
 numpy==1.26.4
 pandas==2.2.2
+pytest=8.3.0
 pyyaml==6.0.1
 scikit-learn==1.4.2
 tqdm==4.66.4
