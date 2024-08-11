@@ -8,7 +8,8 @@ def warmup_gpu(batch_size=1, img_size=224, num_classes=1000):
     dummy_labels = np.random.randint(0, num_classes, (batch_size,))
     # Build a simple model for warming up
     model = tf.keras.Sequential([
-        tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(img_size, img_size, 3)),
+        tf.keras.layers.Input(shape=(img_size, img_size, 3)),
+        tf.keras.layers.Conv2D(32, (3, 3), activation='relu'),
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(num_classes, activation='softmax')
     ])
@@ -41,7 +42,7 @@ for gpu in gpus:
     print('GPU:', gpu)
 
 # Perform the GPU warmup
-warmup_gpu()
+if gpus:
+    warmup_gpu()
 
 print("Done.")
-
