@@ -27,9 +27,6 @@ WORKDIR /code
 # copy the dependencies file to the working directory
 COPY requirements.txt .
 
-# Install jaxlib with CUDA support
-RUN pip install --upgrade "jax[cuda12_pip]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
-
 # Set environment variables for CUDA and cuDNN
 ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
 ENV CUDA_HOME=/usr/local/cuda
