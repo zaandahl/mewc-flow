@@ -1,5 +1,5 @@
 # set base image (host OS)
-FROM tensorflow/tensorflow:2.17.0-gpu
+FROM tensorflow/tensorflow:nightly-gpu
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     ffmpeg \
