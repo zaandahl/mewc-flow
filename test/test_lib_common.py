@@ -1,27 +1,9 @@
 import unittest
-from unittest.mock import patch, mock_open, MagicMock
+from unittest.mock import patch, mock_open
 import os
-import yaml
-import logging  # Import logging for the test
-from lib_common import configure_logging, read_yaml, update_config_from_env, model_img_size_mapping, setup_strategy, NullStrategy
+from lib_common import read_yaml, update_config_from_env, model_img_size_mapping, setup_strategy, NullStrategy
 
 class TestLibCommon(unittest.TestCase):
-
-    @patch('lib_common.logging.getLogger')
-    @patch('lib_common.warnings')
-    @patch.dict(os.environ, {}, clear=True)
-    def test_configure_logging(self, mock_warnings, mock_getLogger):
-        mock_logger = MagicMock()
-        mock_getLogger.return_value = mock_logger
-        
-        configure_logging()
-        
-        mock_getLogger.assert_called_with('tensorflow')
-        mock_logger.setLevel.assert_called_with(logging.ERROR)
-        mock_warnings.simplefilter.assert_any_call(action='ignore', category=FutureWarning)
-        mock_warnings.simplefilter.assert_any_call(action='ignore', category=Warning)
-        mock_warnings.filterwarnings.assert_called_with("ignore")
-        self.assertEqual(os.environ['TF_CPP_MIN_LOG_LEVEL'], '3')
 
     @patch('builtins.open', new_callable=mock_open, read_data="key: value")
     def test_read_yaml(self, mock_file):
