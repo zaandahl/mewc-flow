@@ -1,18 +1,7 @@
-import logging, os, re, warnings, yaml
+import os, re, yaml
 from jax import devices
 from keras import distribution
 from contextlib import contextmanager
-
-# Configure logging to suppress warnings and errors
-def configure_logging():
-    """
-    Set the environment variable to allow INFO messages but suppress WARNING messages.
-    """
-    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress WARNING messages and ERROR logs
-    logging.getLogger('tensorflow').setLevel(logging.ERROR)
-    warnings.simplefilter(action='ignore', category=FutureWarning)
-    warnings.simplefilter(action='ignore', category=Warning)
-    warnings.filterwarnings("ignore")
 
 # Reads a yaml file and returns a dictionary
 def read_yaml(file_path):
