@@ -9,6 +9,20 @@ This repository contains the Dockerfile and docker-compose.yml files used to bui
 
 The `mewc-flow` image is built on top of the latest stable Python image and includes additional dependencies required by Efficient Net v2 models.
 
+## Version 2 Updates
+
+The `mewc-flow` Docker image has been updated to version 2. Key updates include:
+
+- **Base Image**: Upgraded to `tensorflow/tensorflow:2.16.1-gpu`.
+- **CUDA Support**: Added environment variables for CUDA and cuDNN, and installed `JAX` and `JAXLIB` with CUDA 12 support.
+- **Updated Dependencies**: The `requirements.txt` file has been updated with the latest versions of key packages, including `jax`, `keras`, `pandas`, and others.
+  
+For users who wish to continue using version 1, the older Dockerfile and requirements can still be accessed by checking out the `v1.0.11` tag:
+
+```bash
+git checkout v1.0.11
+```
+
 ## Efficient Net v2
 
 Efficient Net v2 is a scalable neural network architecture designed for efficiency and accuracy, which is particularly suited to the classification of wildlife images. More information about Efficient Net v2 can be found in its official documentation:
@@ -31,8 +45,9 @@ This will create a Docker image named `zaandahl/mewc-flow`.
 The Docker image contains:
 
 - Python environment with the requirements from requirements.txt file installed.
-- Necessary utilities (ffmpeg, libsm6, libxext6, git, wget) installed.
+- Necessary utilities (ffmpeg, libsm6, libxext6, nvidia-modprobe, numactl, git, wget, vi) installed.
 - Source code copied into the /code directory in the container.
+- JAX and JAXLIB installed with CUDA 12 support for enhanced performance.
 
 For detailed information about the image contents, please refer to the Dockerfile in this repository.
 
@@ -41,3 +56,8 @@ This project uses GitHub Actions to automate the build process and push the Dock
 
 - [zaandahl/mewc-flow DockerHub Repository](https://hub.docker.com/repository/docker/zaandahl/mewc-flow)
 
+For users needing the older version, the v1.0.11 image is also available on DockerHub by using the appropriate tag:
+
+```bash
+docker pull zaandahl/mewc-flow:v1.0.11
+```
