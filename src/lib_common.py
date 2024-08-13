@@ -1,4 +1,4 @@
-import os, re, yaml
+import os, re, ast, yaml
 from jax import devices
 from keras import distribution
 from contextlib import contextmanager
@@ -13,12 +13,15 @@ def update_config_from_env(config):
     for conf_key, value in config.items():
         if conf_key in os.environ:
             env_val = os.environ[conf_key]
-            if isinstance(config[conf_key], int):  # If the default is an integer
-                config[conf_key] = int(os.environ[conf_key])
+            if isinstance(value, int):  # If the default is an integer
+                config[conf_key] = int(env_val)
             elif isinstance(value, list) and all(isinstance(item, int) for item in value):
                 config[conf_key] = [int(x) for x in env_val.split(',')]
             else:
-                config[conf_key] = env_val
+                try:
+                    config[conf_key] = ast.literal_eval(env_val)
+                except (ValueError, SyntaxError):
+                    config[conf_key] = env_val
     return config
   
 # Maps model names to image sizes
