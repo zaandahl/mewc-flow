@@ -13,7 +13,7 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the script to modify NUMA nodes
-COPY modify_numa.sh /usr/local/bin/modify_numa.sh
+COPY src/modify_numa.sh /usr/local/bin/modify_numa.sh
 
 # Make the script executable
 RUN chmod +x /usr/local/bin/modify_numa.sh
