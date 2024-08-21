@@ -16,6 +16,8 @@ The `mewc-flow` Docker image has been updated to version 2. Key updates include:
 - **Base Image**: Upgraded to `tensorflow/tensorflow:2.16.1-gpu`.
 - **CUDA Support**: Added environment variables for CUDA and cuDNN, and installed `JAX` and `JAXLIB` with CUDA 12 support.
 - **Updated Dependencies**: The `requirements.txt` file has been updated with the latest versions of key packages, including `jax`, `keras`, `pandas`, and others.
+- **Model Support**: Although we default to EfficientNetv2, the ConvNeXt and ViT families are also available. All are sourced via the kimm model zoo API:
+https://github.com/james77777778/keras-image-models
   
 For users who wish to continue using version 1, the older Dockerfile and requirements can still be accessed by checking out the `v1.0.11` tag:
 
