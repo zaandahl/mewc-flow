@@ -38,7 +38,7 @@ def model_img_size_mapping(model_name):
     }
     # Check the model name against each regex pattern and return the corresponding image size
     for pattern, size in size_mapping.items():
-        if re.match(pattern, model_name):
+        if re.match(pattern, model_name[:3]):
             return size
     return 384 # Default value of 384px if no match is found
 
