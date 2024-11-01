@@ -27,14 +27,14 @@ def update_config_from_env(config):
 # Maps model names to image sizes
 def model_img_size_mapping(model_name):
     size_mapping = {
-        r'(?i)^ENB0$': 224,  # ENB0
-        r'(?i)^ENB2$': 260,  # ENB2
+        r'(?i)^EN0$': 224,  # ENB0
+        r'(?i)^EN2$': 260,  # ENB2
         r'(?i)^ENS$': 384,   # ENS
         r'(?i)^EN[ML]$': 480, # ENM, ENL
-        r'(?i)^ENXL$': 512,  # ENXL
+        r'(?i)^ENX$': 512,  # ENXL
         r'(?i)^CN[PN]$': 288, # CNP, CNN
         r'(?i)^CN[TSBL]$': 384, # CNT, CNS, CNB, CNBL
-        r'(?i)^ViT[TBSL]$': 384 # ViTT, ViTS, ViTB, ViTL
+        r'(?i)^VT[TBSL]$': 384 # ViTT, ViTS, ViTB, ViTL
     }
     # Check the model name against each regex pattern and return the corresponding image size
     for pattern, size in size_mapping.items():
