@@ -1,6 +1,7 @@
 import os, re, ast, yaml
 from jax import devices
 from keras import distribution
+from pathlib import Path
 from contextlib import contextmanager
 
 # Reads a yaml file and returns a dictionary
@@ -60,3 +61,8 @@ def setup_strategy():
         strategy = NullStrategy()
         print('CPU-only training activated' + '\n')
     return strategy
+
+# Return valid model type if filename is specified
+def get_mod(s: str) -> str:
+    m = Path(s)
+    return m.stem[:3] if m.suffix.lower() == ".keras" else m.stem
