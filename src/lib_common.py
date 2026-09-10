@@ -113,4 +113,13 @@ def setup_strategy():
 
 def get_mod(s: str) -> str:
     m = Path(s)
-    return m.stem[:3] if m.suffix.lower() == '.keras' else m.stem
+    if m.suffix.lower() != '.keras':
+        return m.stem
+    # Keep the historical three-character filename parsing for canonical
+    # names, while retaining the four-character aliases accepted downstream.
+    aliases = ('ENB0', 'ENB2', 'ENXL', 'VITT', 'VITS', 'VITB', 'VITL')
+    prefix = m.stem.upper()
+    for alias in aliases:
+        if prefix.startswith(alias):
+            return m.stem[:len(alias)]
+    return m.stem[:3]
