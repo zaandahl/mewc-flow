@@ -2,6 +2,8 @@
 
 # mewc-flow
 
+The integrity changes in this checkout require the source builds described in [BUILDING.md](BUILDING.md). Existing DockerHub examples do not provide these fixes until a maintainer publishes a compatible release. Use the tested image ID or digest from the generated image lock.
+
 This repository contains the Dockerfile and docker-compose.yml files used to build the `mewc-flow` Docker image. The `mewc-flow` Docker image serves as the base image for the `mewc-train` and `mewc-predict` Docker images, which are used for Efficient Net v2 training and prediction for wildlife camera trap images.
 
 - [mewc-train Docker Image Repository](https://github.com/zaandahl/mewc-train)
