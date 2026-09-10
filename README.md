@@ -63,3 +63,24 @@ For users needing the older version, the v1.0.11 image is also available on Dock
 ```bash
 docker pull zaandahl/mewc-flow:v1.0.11
 ```
+
+## Shared configuration contract
+
+`lib_common` parses declared options by their configured type. Boolean parsing
+runs before integer parsing and accepts True/False, true/false, 1/0, yes/no,
+and on/off; invalid boolean or integer values fail explicitly. Strings stay
+strings. Callers supplying an explicit override mapping also get unknown-key
+validation; unrelated process environment variables are ignored. YAML mappings
+reject duplicate keys instead of silently overwriting labels or settings.
+
+Architecture-to-image-size lookup matches the complete option. ENB0/EN0 map to
+224, ENB2/EN2 to 260, ENS to 384, ENM/ENL to 480, ENXL/ENX to 512,
+CNP/CNN to 288, other supported CN variants to 384, and VTT/VTS/VTB/VTL
+(including ViTT/ViTS/ViTB/ViTL aliases) to 384. Unknown options fail; they no
+longer fall back to 384. Shape agreement alone does not validate a serialized
+model's architecture or class order; `mewc-predict` handles model preflight.
+Accelerator imports occur only when training requests `setup_strategy`, so
+configuration tests can run without TensorFlow or JAX.
+
+Run the focused tests with `PYTHONPATH=src python -m pytest -q test` in an
+environment containing pytest and PyYAML.

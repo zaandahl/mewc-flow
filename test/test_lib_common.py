@@ -1,49 +1,47 @@
-import unittest
-from unittest.mock import patch, mock_open
-import os
+import sys
+from types import SimpleNamespace
+from unittest.mock import Mock
+import pytest
 from lib_common import read_yaml, update_config_from_env, model_img_size_mapping, setup_strategy, NullStrategy
 
-class TestLibCommon(unittest.TestCase):
 
-    @patch('builtins.open', new_callable=mock_open, read_data="key: value")
-    def test_read_yaml(self, mock_file):
-        result = read_yaml('dummy_path.yaml')
-        self.assertEqual(result, {'key': 'value'})
-        mock_file.assert_called_with('dummy_path.yaml', 'r')
+def test_read_yaml_rejects_duplicate_keys(tmp_path):
+    path=tmp_path/'classes.yaml'
+    path.write_text('0: quoll\n0: devil\n')
+    with pytest.raises(ValueError,match='Duplicate'): read_yaml(path)
 
-    @patch.dict(os.environ, {'TEST_KEY': '123', 'TEST_LIST': '1,2,3'}, clear=True)
-    def test_update_config_from_env(self):
-        config = {'TEST_KEY': 0, 'TEST_LIST': [0, 0, 0]}
-        updated_config = update_config_from_env(config)
-        self.assertEqual(updated_config['TEST_KEY'], 123)
-        self.assertEqual(updated_config['TEST_LIST'], [1, 2, 3])
 
-    def test_model_img_size_mapping(self):
-        self.assertEqual(model_img_size_mapping('ENB0'), 224)
-        self.assertEqual(model_img_size_mapping('ENB2'), 260)
-        self.assertEqual(model_img_size_mapping('ENS'), 384)
-        self.assertEqual(model_img_size_mapping('ENM'), 480)
-        self.assertEqual(model_img_size_mapping('ENXL'), 512)
-        self.assertEqual(model_img_size_mapping('CNP'), 288)
-        self.assertEqual(model_img_size_mapping('CNT'), 384)
-        self.assertEqual(model_img_size_mapping('ViTT'), 384)
-        self.assertEqual(model_img_size_mapping('UnknownModel'), 384)
+@pytest.mark.parametrize('value,expected',[('True',True),('False',False),('true',True),('false',False),('1',True),('0',False),('yes',True),('off',False)])
+def test_boolean_parsed_before_integer(value,expected):
+    assert update_config_from_env({'FLAG':False},{'FLAG':value})['FLAG'] is expected
 
-    @patch('lib_common.devices', return_value=['cpu'])
-    @patch('lib_common.distribution')
-    def test_setup_strategy_cpu(self, mock_distribution, mock_devices):
-        # Test setup_strategy when only CPU is available
-        strategy = setup_strategy()
-        self.assertIsInstance(strategy, NullStrategy)
-        self.assertFalse(mock_distribution.DataParallel.called)
 
-    @patch('lib_common.devices', return_value=['cuda:0', 'cuda:1'])
-    @patch('lib_common.distribution')
-    def test_setup_strategy_gpu(self, mock_distribution, mock_devices):
-        # Test setup_strategy when GPU is available
-        strategy = setup_strategy()
-        mock_distribution.DataParallel.assert_called_with(devices=['cuda:0', 'cuda:1'])
-        self.assertTrue(mock_distribution.DataParallel.called)
+@pytest.mark.parametrize('value',['truthy','2','none',''])
+def test_invalid_boolean_rejected(value):
+    with pytest.raises(ValueError): update_config_from_env({'FLAG':False},{'FLAG':value})
 
-if __name__ == '__main__':
-    unittest.main()
+
+def test_integer_list_and_string_types():
+    assert update_config_from_env({'N':1,'L':[1],'S':'x'},{'N':'12','L':'1,2,3','S':'001'}) == {'N':12,'L':[1,2,3],'S':'001'}
+    with pytest.raises(ValueError): update_config_from_env({'N':1},{'N':'1.5'})
+    with pytest.raises(ValueError,match='Unknown'): update_config_from_env({'N':1},{'DRAW':'true'})
+
+
+@pytest.mark.parametrize('name,size',[('ENB0',224),('EN0',224),('ENB2',260),('EN2',260),('ENS',384),('ENM',480),('ENL',480),('ENXL',512),('ENX',512),('CNP',288),('CNT',384),('ViTT',384),('VTL',384)])
+def test_exact_architecture_aliases(name,size):
+    assert model_img_size_mapping(name)==size
+
+
+@pytest.mark.parametrize('name',['UnknownModel','VTLtypo','ENS_other','ENB'])
+def test_unknown_architecture_rejected(name):
+    with pytest.raises(ValueError): model_img_size_mapping(name)
+
+
+@pytest.mark.parametrize('devices',[['cpu'],['cuda:0','cuda:1']])
+def test_strategy_lazy_import(monkeypatch,devices):
+    distribution=SimpleNamespace(DataParallel=Mock())
+    monkeypatch.setitem(sys.modules,'jax',SimpleNamespace(devices=lambda:devices))
+    monkeypatch.setitem(sys.modules,'keras',SimpleNamespace(distribution=distribution))
+    strategy=setup_strategy()
+    if devices==['cpu']: assert isinstance(strategy,NullStrategy)
+    else: distribution.DataParallel.assert_called_once_with(devices=devices)
